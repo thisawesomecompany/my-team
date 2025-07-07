@@ -9,20 +9,37 @@ interface TeamNavBarProps {
   onTeamSelect: (team: Team) => void;
 }
 
-const teamIcons = {
-  'life-coach': '👨‍💼',
-  'financial-advisor': '💰',
-  'doctor': '⚕️',
-  'researcher': '🔍',
-  'executive-assistant': '👩‍💼'
-} as const;
-
-const teamNames = {
-  'life-coach': 'Life Coach',
-  'financial-advisor': 'Financial Advisor', 
-  'doctor': 'Doctor',
-  'researcher': 'Researcher',
-  'executive-assistant': 'Executive'
+const teamConfig = {
+  'life-coach': {
+    name: 'Wellness',
+    icon: '💚',
+    color: 'green'
+  },
+  'financial-advisor': {
+    name: 'Financial',
+    icon: '$',
+    color: 'blue'
+  },
+  'doctor': {
+    name: 'Health',
+    icon: '♡',
+    color: 'red'
+  },
+  'researcher': {
+    name: 'Career',
+    icon: '💼',
+    color: 'purple'
+  },
+  'executive-assistant': {
+    name: 'Tech',
+    icon: '💻',
+    color: 'gray'
+  },
+  'mr-mean': {
+    name: 'Mean',
+    icon: '😈',
+    color: 'red'
+  }
 } as const;
 
 export function TeamNavBar({ teams, selectedTeam, onTeamSelect }: TeamNavBarProps) {
@@ -42,51 +59,46 @@ export function TeamNavBar({ teams, selectedTeam, onTeamSelect }: TeamNavBarProp
   }, [selectedTeam, storageService]);
 
   return (
-    <div className="bg-white border-b border-gray-200 px-6 py-4">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">My Team</h1>
-        
-        <div className="flex space-x-8">
+    <div className="bg-white border-b border-gray-200">
+      <div className="max-w-4xl mx-auto px-6">
+        <div className="flex space-x-0">
           {teams.map((team) => {
             const isSelected = selectedTeam?.id === team.id;
             const hasHistory = teamsWithHistory.includes(team.id);
-            const icon = teamIcons[team.id as keyof typeof teamIcons] || '🤖';
-            const name = teamNames[team.id as keyof typeof teamNames] || team.name;
+            const config = teamConfig[team.id as keyof typeof teamConfig];
+            const displayName = config?.name || team.name;
+            const icon = config?.icon || '🤖';
             
             return (
               <button
                 key={team.id}
                 onClick={() => onTeamSelect(team)}
                 className={cn(
-                  'flex flex-col items-center space-y-2 p-3 rounded-xl transition-all duration-200',
+                  'flex flex-col items-center py-4 px-6 transition-all duration-200 relative',
                   'hover:bg-gray-50',
-                  isSelected && 'bg-blue-50'
+                  isSelected ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'
                 )}
               >
-                <div className="relative">
-                  <div className={cn(
-                    'w-16 h-16 rounded-full flex items-center justify-center text-2xl transition-all duration-200',
-                    isSelected 
-                      ? 'bg-blue-100 ring-2 ring-blue-300' 
-                      : 'bg-gray-100 hover:bg-gray-200'
-                  )}>
-                    {icon}
-                  </div>
-                  {hasHistory && !isSelected && (
-                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 rounded-full border-2 border-white" />
-                  )}
+                <div className={cn(
+                  'w-12 h-12 rounded-full flex items-center justify-center text-lg mb-2 transition-all duration-200',
+                  isSelected 
+                    ? 'bg-blue-100 text-blue-600' 
+                    : 'bg-gray-100 text-gray-500'
+                )}>
+                  {icon}
                 </div>
-                <div className="text-center">
-                  <div className={cn(
-                    'text-sm font-medium',
-                    isSelected ? 'text-blue-700' : 'text-gray-700'
-                  )}>
-                    {name}
-                  </div>
-                  {isSelected && (
-                    <div className="w-12 h-0.5 bg-blue-500 mt-1 mx-auto rounded-full" />
-                  )}
+                <div className={cn(
+                  'text-sm font-medium',
+                  isSelected ? 'text-blue-600' : 'text-gray-500'
+                )}>
+                  {displayName}
                 </div>
+                {hasHistory && !isSelected && (
+                  <div className="absolute top-2 right-4 w-2 h-2 bg-blue-500 rounded-full" />
+                )}
+                {isSelected && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600" />
+                )}
               </button>
             );
           })}

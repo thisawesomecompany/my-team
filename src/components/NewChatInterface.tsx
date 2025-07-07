@@ -109,101 +109,117 @@ export function NewChatInterface({ selectedTeam }: NewChatInterfaceProps) {
   const getWelcomeMessage = () => {
     const welcomes = {
       'life-coach': "Hi! What's on your mind today?",
-      'financial-advisor': "Hello! Ready to work on your financial goals?",
+      'financial-advisor': "Hello! I'm your Financial Advisor. How can I assist you with your financial goals today?",
       'doctor': "Hi there! How can I help with your health questions today?",
       'researcher': "Hello! What would you like me to research for you?",
-      'executive-assistant': "Hi! How can I help you stay organized today?"
+      'executive-assistant': "Hi! How can I help you stay organized today?",
+      'mr-mean': "What do you want? Make it quick."
     };
     return welcomes[selectedTeam.id as keyof typeof welcomes] || "Hi! How can I help you today?";
   };
 
+  const getTeamAvatar = () => {
+    const avatars = {
+      'life-coach': '/api/placeholder/40/40?text=W',
+      'financial-advisor': '/api/placeholder/40/40?text=$',
+      'doctor': '/api/placeholder/40/40?text=H',
+      'researcher': '/api/placeholder/40/40?text=C',
+      'executive-assistant': '/api/placeholder/40/40?text=T',
+      'mr-mean': '/api/placeholder/40/40?text=M'
+    };
+    return avatars[selectedTeam.id as keyof typeof avatars] || '/api/placeholder/40/40?text=AI';
+  };
+
   return (
-    <div className="flex-1 flex flex-col bg-white">
+    <div className="flex-1 flex flex-col bg-gray-50">
       {/* Chat Messages */}
       <div className="flex-1 overflow-y-auto px-6 py-6">
+        <div className="max-w-4xl mx-auto">
         {messages.length === 0 ? (
-          <div className="space-y-6">
-            <div className="flex items-start space-x-4">
-              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                <span className="text-lg">
-                  {selectedTeam.name.match(/^[^\s]+/)?.[0] || '🤖'}
-                </span>
-              </div>
-              <div className="bg-gray-100 text-gray-900 px-4 py-3 rounded-lg max-w-md">
-                <p className="text-sm">{getWelcomeMessage()}</p>
+          <div className="space-y-4">
+            <div className="flex items-start space-x-3">
+              <img 
+                src={getTeamAvatar()} 
+                alt="AI Assistant" 
+                className="w-10 h-10 rounded-full bg-gray-200"
+              />
+              <div className="bg-white text-gray-900 px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm max-w-md">
+                <p className="text-sm leading-relaxed">{getWelcomeMessage()}</p>
               </div>
             </div>
           </div>
         ) : (
           <>
             {messages.map((message) => (
-              <div key={message.id} className="mb-4">
-                <div className={`flex items-start space-x-4 ${
+              <div key={message.id} className="mb-6">
+                <div className={`flex items-start space-x-3 ${
                   message.role === 'user' ? 'flex-row-reverse space-x-reverse' : ''
                 }`}>
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                    message.role === 'user' 
-                      ? 'bg-blue-500 text-white' 
-                      : 'bg-blue-100'
-                  }`}>
-                    <span className="text-lg">
-                      {message.role === 'user' 
-                        ? '👤' 
-                        : selectedTeam.name.match(/^[^\s]+/)?.[0] || '🤖'
-                      }
-                    </span>
-                  </div>
-                  <div className={`px-4 py-3 rounded-lg max-w-md ${
+                  {message.role === 'user' ? (
+                    <img 
+                      src="/api/placeholder/40/40?text=You" 
+                      alt="You" 
+                      className="w-10 h-10 rounded-full bg-blue-500"
+                    />
+                  ) : (
+                    <img 
+                      src={getTeamAvatar()} 
+                      alt="AI Assistant" 
+                      className="w-10 h-10 rounded-full bg-gray-200"
+                    />
+                  )}
+                  <div className={`px-4 py-3 rounded-2xl max-w-md shadow-sm ${
                     message.role === 'user'
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-100 text-gray-900'
+                      ? 'bg-blue-500 text-white rounded-tr-sm'
+                      : 'bg-white text-gray-900 rounded-tl-sm'
                   }`}>
-                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                    <p className={`text-xs mt-2 ${
-                      message.role === 'user' ? 'text-blue-100' : 'text-gray-500'
-                    }`}>
-                      {message.timestamp.toLocaleTimeString()}
-                    </p>
+                    <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
                   </div>
                 </div>
               </div>
             ))}
             {isLoading && (
-              <div className="flex items-start space-x-4 mb-4">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-lg">
-                    {selectedTeam.name.match(/^[^\s]+/)?.[0] || '🤖'}
-                  </span>
-                </div>
-                <div className="bg-gray-100 text-gray-900 px-4 py-3 rounded-lg">
-                  <p className="text-sm">Thinking...</p>
+              <div className="flex items-start space-x-3 mb-6">
+                <img 
+                  src={getTeamAvatar()} 
+                  alt="AI Assistant" 
+                  className="w-10 h-10 rounded-full bg-gray-200"
+                />
+                <div className="bg-white text-gray-900 px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm">
+                  <p className="text-sm text-gray-500">Thinking...</p>
                 </div>
               </div>
             )}
           </>
         )}
         <div ref={messagesEndRef} />
+        </div>
       </div>
 
       {/* Input */}
-      <div className="border-t border-gray-200 px-6 py-4">
-        <form onSubmit={handleSendMessage} className="flex space-x-4">
-          <input
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Type a message..."
-            disabled={isLoading}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
-          />
-          <button
-            type="submit"
-            disabled={!inputValue.trim() || isLoading}
-            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            Send
-          </button>
-        </form>
+      <div className="bg-white border-t border-gray-200 px-6 py-4 flex-shrink-0">
+        <div className="max-w-4xl mx-auto">
+          <form onSubmit={handleSendMessage} className="flex items-center space-x-3">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder="Type your message..."
+              disabled={isLoading}
+              className="flex-1 px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 text-sm"
+            />
+            <button
+              type="submit"
+              disabled={!inputValue.trim() || isLoading}
+              className="px-6 py-3 bg-blue-500 text-white rounded-2xl hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center space-x-2 text-sm font-medium flex-shrink-0"
+            >
+              <span>Send</span>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+              </svg>
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

@@ -62,40 +62,45 @@ export function ContextSidebar({ selectedTeam }: ContextSidebarProps) {
   const memory = contextData[selectedTeam.id as keyof typeof contextData] || { recentMemory: [] };
 
   return (
-    <div className="w-80 bg-gray-50 border-r border-gray-200 p-6 flex flex-col">
-      <div className="flex items-center space-x-3 mb-6">
-        <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+    <div className="w-80 bg-white border-r border-gray-200 p-6 flex flex-col">
+      <div className="flex items-center space-x-3 mb-8">
+        <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
           <span className="text-xl">
             {selectedTeam.name.match(/^[^\s]+/)?.[0] || '🤖'}
           </span>
         </div>
         <div>
-          <h3 className="font-semibold text-gray-900">
-            Jordan - {selectedTeam.name.replace(/^[^\s]+\s*/, '')}
+          <h3 className="font-semibold text-gray-900 text-base">
+            {selectedTeam.name.replace(/^[^\s]+\s*/, '')} Assistant
           </h3>
+          <p className="text-sm text-gray-500">AI Advisor</p>
         </div>
       </div>
 
-      <div className="mb-6">
-        <h4 className="text-sm font-medium text-gray-700 mb-3">Recent memory</h4>
-        <div className="space-y-2">
+      <div className="mb-8">
+        <h4 className="text-sm font-medium text-gray-900 mb-4">Recent memory</h4>
+        <div className="space-y-3">
           {memory.recentMemory.map((item, index) => (
-            <div key={index} className="flex items-start space-x-2">
+            <div key={index} className="flex items-start space-x-3">
               <div className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0" />
-              <span className="text-sm text-gray-600">{item}</span>
+              <span className="text-sm text-gray-600 leading-relaxed">{item}</span>
             </div>
           ))}
         </div>
       </div>
 
       <div className="mt-auto space-y-3">
-        <button className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2">
-          <span>📅</span>
+        <button className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors flex items-center justify-center space-x-2">
+          <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
           <span>Set Reminder</span>
         </button>
         
-        <button className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2">
-          <span>🎯</span>
+        <button className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors flex items-center justify-center space-x-2">
+          <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
           <span>Add To Goal</span>
         </button>
       </div>
